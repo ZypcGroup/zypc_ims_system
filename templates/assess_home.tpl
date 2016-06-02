@@ -43,7 +43,7 @@
 					<ul class="res"> 
                         <li><a href="/">主页</a></li>
 						<li><a class="active" href="assess_home.php">写计划</a></li> 
-						<li><a href="#">历史计划</a></li>
+						<li><a href="/html/user_history_plans.html">历史计划</a></li>
 						<li><a href="/login_out.php">退出</a></li>
 				   </ul>
 				 </nav>

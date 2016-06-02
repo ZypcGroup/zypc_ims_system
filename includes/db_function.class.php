@@ -11,6 +11,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 检查username合法性
     * 参数：username
     * 返回值：username / false
@@ -37,6 +38,7 @@ class db_sql_functions
     }
     
     /*
+    * author:s0nnet
     * 检查user合法性
     * 参数：username,password
     * 返回值：username / false
@@ -63,6 +65,7 @@ class db_sql_functions
     }
     
     /*
+    * author:s0nnet
     * 添加周小结
     * 参数：username,last_sum,this_play,detial_play
     * 返回值：true / false
@@ -84,6 +87,7 @@ class db_sql_functions
     }
     
     /*
+    * author:s0nnet
     * 获取上周小结
     * 参数：username
     * 返回值：array(result) / false
@@ -113,6 +117,7 @@ class db_sql_functions
     }
     
     /*
+    * author:s0nnet
     * 添加组长评价
     * 参数：uid,rate,rank,timelong
     * 返回值：true / false
@@ -134,6 +139,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 检查agentid合法性
     * 参数：agentid
     * 返回值：agent_id / false
@@ -160,6 +166,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 检查近期用户在线数
     * 参数：alive
     * 返回值：array(username) / false
@@ -187,6 +194,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 检查心跳存活状态
     * 参数：username,alive
     * 返回值：array(uid,stime) / false
@@ -210,6 +218,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 更新签到记录
     * 参数：uid
     * 返回值: true / false
@@ -232,6 +241,7 @@ class db_sql_functions
     }
 
     /*
+    * author:s0nnet
     * 添加签到记录
     * 参数： username
     * 返回值：true / false
@@ -253,7 +263,49 @@ class db_sql_functions
         else
             return false;
     }
-		
+
+    /*
+    * author:JEmbarce
+    * 管理员登录判断
+    * 参数： usernamepassword，
+    * 返回值：true / false
+    */
+     public function admin_login_check($username,$password)
+    {
+        if(is_numeric($username)){
+            $check_rs = check_user($username,$password);
+           
+            if($check_rs){
+                return false;
+            }
+
+            $sql = "SELECT permission FROM users WHERE username=?";
+            $stmt = $this->dbconn->get_mysqli()->stmt_init();
+            $stmt->prepare($sql);
+            $stmt->bind_param('s',$username);
+            $stmt->execute();
+            $stmt->bind_result($user); 
+            $permission_result = $stmt->fetch();
+
+            if($permission_result == 1){
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+            return false;
+        }
+        
+        
+    }
+
+	 /*
+    * author:qiangweikimkimkim
+    * 获取用户制定的所有历史计划
+    * 参数： username
+    * 返回值： 二维数组$result / 空数组
+    */	
     public function get_user_history_plans($username)
     {
         $sql = "SELECT username,last_sum,pubdate,this_play,detial_play,admin_rate,admin_rank,timelong,admin_flag FROM asseing WHERE username=? ORDER BY pubdate DESC";
@@ -264,7 +316,7 @@ class db_sql_functions
         $stmt->execute();
         $stmt->bind_result($username,$last_sum,$this_pubdate,$this_play,$detial_play,$admin_rate,$admin_rank,$timelong,$admin_flag);
 	
-	$result=array();
+	   $result=array();
         while($row = $stmt->fetch()){
             if ($row){
                 array_push($result,array(
@@ -282,7 +334,13 @@ class db_sql_functions
 
         return $result;
      }
-	
+
+	 /*
+    * author:qiangweikimkimkim
+    * 获取上周组长已经评级的用户
+    * 参数：无参数
+    * 返回值： 二维数组$result / 空数组
+    */  
     public function get_already_judge()
     {
         $sql = "SELECT asseing.username,users.nickname,users.email,users.phone FROM asseing,users WHERE asseing.username=users.username AND admin_flag<>0";
@@ -292,7 +350,7 @@ class db_sql_functions
         $stmt->execute();
         $stmt->bind_result($username,$nickname,$email,$phone);
 	
-	$result=array();
+	   $result=array();
         while($row = $stmt->fetch()){
             if ($row){
                 array_push($result,array(
@@ -306,7 +364,12 @@ class db_sql_functions
         return $result;	
     }
 
-	
+	 /*
+    * author:qiangweikimkimkim
+    * 获取上周组长未评级的用户
+    * 参数：无参数
+    * 返回值： 二维数组$result / 空数组
+    */  
     public function get_not_judge()
     {
         $sql = "SELECT asseing.username,users.nickname,users.email,users.phone FROM asseing,users WHERE asseing.username=users.username AND asseing.admin_flag=0";
@@ -329,7 +392,12 @@ class db_sql_functions
 
         return $result;
 	}
-	
+	 /*
+    * author:qiangweikimkimkim
+    * 根据学号获取到这个人一周的在线时长
+    * 参数：username
+    * 返回值： float类型的 $sum 值 
+    */  
     
     public function get_timelong_oneweek($username)
     {
@@ -372,6 +440,7 @@ class db_sql_functions
         return $sum;
     }
     
+
     public function get_timelong_oneweek_circle($username)
     {
         $now=time();
@@ -415,6 +484,12 @@ class db_sql_functions
     
     }
     
+     /*
+    * author:qiangweikimkimkim
+    * 获取每个人一周的在线总时长
+    * 参数：无参数
+    * 返回值： 二维数组 $re
+    */  
     public function get_oneweek_time_circle()
     {
         $sql = "SELECT username,nickname FROM users ";
@@ -466,6 +541,13 @@ class db_sql_functions
         }
         return $result;
     }
+
+     /*
+    * author:qiangweikimkimkim
+    * 获取每个人一周内每一天的在线时长
+    * 参数：无参数
+    * 返回值： 三维数组 $re
+    */  
     public function get_oneweek_time_line()
     {
         $sql = "SELECT DISTINCT username FROM signing ";
@@ -492,7 +574,12 @@ class db_sql_functions
         return $re;
     }
 
-
+     /*
+    * author:JEmbarce
+    * 获取所有人的信息
+    * 参数：无参数
+    * 返回值： 二维数组 $userArray
+    */  
     public function get_all_user(){
         $sql = "SELECT username,nickname,phone,email FROM users";
         $stmt = $this->dbconn->get_mysqli()->stmt_init();
@@ -513,6 +600,13 @@ class db_sql_functions
         return $userArray;
 
     } 
+
+     /*
+    * author:JEmbarce
+    * 根据用户名获取用户的学号
+    * 参数：$username
+    * 返回值： 二维数组 $userArray
+    */  
 	public function get_uid($username)
     {
         $sql="SELECT uid FROM asseing WHERE username=? ORDER BY uid DESC LIMIT 1";
@@ -532,7 +626,12 @@ class db_sql_functions
 
     }
 
-
+     /*
+    * author:JEmbarce
+    * 绑定tooken和时间并插入数据库
+    * 参数：$value,$time
+    * 返回值： true/false
+    */  
    public function insert_tooken($value,$time){
 
         $sql = "INSERT INTO validate(tooken,time) VALUES(?,?)";
@@ -549,6 +648,12 @@ class db_sql_functions
         }
    }
 
+    /*
+    * author:JEmbarce
+    * 管理员退出时删除绑定的tooken
+    * 参数：$tookenid
+    * 返回值： true/false
+    */  
     public function delete_tookenid($tookenid){
         $sql = "DELETE FROM validate WHERE tooken = ? ";
         $stmt = $this->dbconn->get_mysqli()->stmt_init();
@@ -562,7 +667,12 @@ class db_sql_functions
             return false;
         }
    }
-
+   /*
+    * author:JEmbarce
+    * 根据 tookenid 获取到tooken的记录
+    * 参数：$tookenid
+    * 返回值：一维数组 $arr/false
+    */  
    public function select_tooken($tookenid){
         $sql = "SELECT tooken,time FROM validate WHERE tooken = ?";
         $stmt = $this->dbconn->get_mysqli()->stmt_init();

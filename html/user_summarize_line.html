@@ -15,29 +15,27 @@
 <!--Google Fonts-->
 <link href='//fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'>
 <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="../static/css/animate.css">
-<link rel="stylesheet" href="../static/css/styleq.css">
 <!-- start-smoth-scrolling -->
 <script type="text/javascript" src="../static/js/move-top.js"></script>
 <script type="text/javascript" src="../static/js/easing.js"></script>
-<script type="text/javascript">
+    <script type="text/javascript">
             jQuery(document).ready(function($) {
                 $(".scroll").click(function(event){     
                     event.preventDefault();
                     $('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
                 });
             });
-</script>
-   
+    </script>
+<!-- //end-smoth-scrolling -->
 </head>
 <body>
-      <!--banner start here-->
+<!--banner start here-->
 <div class="banner-two">
     <div class="header">
         <div class="container">
             <div class="header-main">
                 <div class="logo">
-                    <h2><a href="#">内部签到平台</a></h2>
+                    <h2><a href="sign_home.php">内部签到平台</a></h2>
                 </div>
                 <div class="top-nav">
                     <span class="menu"> 
@@ -46,128 +44,207 @@
                     <nav class="cl-effect-1">
                         <ul class="res"> 
                             <li><a href="/">主页</a></li>
-                            <li><a href="../sign_online.php">状态查询</a></li> 
-                            <li><a href="user_summarize_line.html">在线时长</a></li> 
-                            <li><a class="active" href="/sign_home.php">Agent安装</a></li>
-                            <li><a href="/WEPAPI/login_out.php">退出</a></li>
+                            <li><a href="sign_online.php">状态查询</a></li>
+                            <li><a href="/html/user_summarize_line.html">在线时长</a></li> 
+                            <li><a class="active" href="sign_home.php">Agent安装</a></li>
+                            <li><a href="/login_out.php">退出</a></li>
                         </ul>
                     </nav>
+                    <!-- script-for-menu -->
                     <script>
                         $( "span.menu" ).click(function() {
                             $( "ul.res" ).slideToggle( 300, function() {
+                                // Animation complete.
                             });
                         });
                     </script>
+                    <!-- /script-for-menu -->
                 </div>
                 <div class="clearfix"></div>
             </div>
         </div>
     </div>
  </div>
-<!--banner end here-->     
-
+<!--banner end here-->
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="main" style="height:400px"></div>
-    <a id="Transform" href="pie.html" style="onMouseOut=this.style.color="blue" "><div id="pie">在线总时长一览</div></a>
+    <a href="#" style="onMouseOut=this.style.color="blue" "><div id="pie">在线总时长一览</div></a>
     <!-- ECharts单文件引入 -->
     <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
     <script src="../static/js/ajax.js"></script>
     <script type="text/javascript">
-        var obj = {
-            aaa:[],
-            bbb:[]
-        };
-        // 测试调用
-        Ajax('get', 'http://ims.smartxupt.com/WEPAPI/user_summarize.php',null,function(data){
-            var json = JSON.parse(data);
-            var arr = [];
-            var arr1 = [];
-            // console.log(json.data[1][0]);
-            for(var j = 0;j<json.data[1].length;j++)
-            {
-                for(var i = 0;i < json.data[1][j].length;i++)
-                {
-                    arr.push(json.data[1][j][i].date);
-                    arr1.push(json.data[1][j][i].sum_long);
-                    obj.aaa = arr;
-                    obj.bbb = arr1;
-                    console.log(json.data[1][j].length);
+        var StartTime = [];
+        var series =[];
+        function formOnload(){
+        //按周日为一周的最后一天计算
+            var date = new Date();
+            var this_day = date.getDay(); //今天是这周的第几天
+            var step_s = -this_day+1; //上周日距离今天的天数（负数表示）
+                if (this_day == 0) {
+                    step_s = -7; // 如果今天是周日
                 }
-                // obj.aaa = arr;
-                // obj.bbb = arr1;
+            var step_m = 7 - this_day; // 周日距离今天的天数（负数表示）
+            var thisTime = date.getTime();
+            var monday = new Date(thisTime +  step_s * 24 * 3600* 1000);
 
+            //获取一周日期start
+            var this_time = thisTime + step_s*24*3600*1000;
+            var starttime = transferDate(monday); //本周一的日期 （起始日期）
+            var time_arr = [];
+            time_arr.push(starttime);
+            for(var i =0;i<6;i++){
+                this_time += 24*3600*1000;
+                var time = new Date(this_time);
+                time_arr.push(transferDate(time)); 
             }
-             // alert(json.data[1][0].length);
+                // console.log(time_arr);  
+                StartTime =time_arr;
+            //一周日期end
+        }
 
-            
-
-            // console.log(obj.aaa);
-            // console.log(obj.bbb);
-
-        }, function(error){
-            console.log(error);
-        }); 
-        // 路径配置
-            require.config({
-                paths: {
-                    echarts: 'http://echarts.baidu.com/build/dist'
+        function transferDate(date) {
+            var yearTemp = date.getYear();
+            var monthTemp = date.getMonth()+1;
+            var dayTemp = date.getDate();
+                if(parseInt(monthTemp) < 10) {
+                    monthTemp = "0" + monthTemp;
+                } 
+         
+                if(parseInt(dayTemp) < 10) {
+                    dayTemp = "0" + dayTemp;
                 }
-            });      
+            return monthTemp + "-" + dayTemp;
+        }
 
-                // 使用
-            require([
-                    'echarts',
-                    'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
-                    'echarts/chart/line'
-                ],
-                function (ec) {
-                    // 基于准备好的dom，初始化echarts图表
-                    var myChart = ec.init(document.getElementById('main')); 
-                var option = {
-                    tooltip: {
-                        show: true
-                    },
-                    legend: {
-                        data:['在线时长']
-                    },
-                    toolbox: {
+        formOnload();
+        // console.log(StartTime);//获取到本周所有的日期，格式：05-30 
+
+        //遍历数组有则取值，无则赋0
+     
+        var arr_name=[];
+        var arr_date_new=[];
+        var arr_sum_long_new=[];
+
+        // 测试调用
+        Ajax('get','http://ims.smartxupt.com/WEPAPI/user_summarize_line.php',null,function(data){
+            if(data == 1){
+                window.location.pathname="/sign_home.php";
+            }
+            var json = JSON.parse(data);
+            for(var i = 0;i<json.data.length;i++){
+                var arr_date=[];
+                var arr_sum_long=[];
+                    for(var j = 0;j<json.data[i].length;j++){
+                        if(json.data[i].length==0){
+                            i++;
+                        }
+                        arr_name.push(json.data[i][j].nickname);
+                        arr_date.push(json.data[i][j].date);
+                        arr_sum_long.push(json.data[i][j].sum_long);
+                    }
+                arr_date_new.push(arr_date);
+                arr_sum_long_new.push(arr_sum_long);
+            }
+
+            console.log(arr_date_new);//日期数组
+            console.log(arr_sum_long_new);//在线时长数组
+
+        //js数组去重
+        Array.prototype.unique = function(){
+            var res = [];
+            var json = {};
+            for(var i= 0;i<this.length;i++){
+                if(!json[this[i]]){
+                    res.push(this[i]);
+                    json[this[i]]=1;
+                }
+            }
+            return res;
+        }
+        arr_name = arr_name.unique();
+
+        //添加元素
+        for(var i = 0;i<json.data.length;i++){
+            for(var j = 0;j<7;j++){
+                var Index = arr_date_new[i].indexOf(StartTime[j]);
+                if(Index==-1){
+                    arr_date_new[i].splice(j,0,StartTime[j]);
+                    arr_sum_long_new[i].splice(j,0,0);//添加0
+                }
+            }
+        }
+   
+        console.log(arr_date_new);//日期数组
+        console.log(arr_sum_long_new);//在线时长数组  
+        var series1=[]; //配置option中的series
+            for(var i = 0;i<json.data.length;i++){
+                series1.push({
+                    name: arr_name[i],
+                    type: 'line',
+                    stack: '总量',
+                    data: arr_sum_long_new[i]
+                });
+            } 
+            series = series1;
+
+    }, function(error){
+        console.log(error);
+    }); 
+    // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });      
+
+            // 使用
+        require([
+                'echarts',
+                'echarts/chart/line',
+                'echarts/chart/bar'
+            ],
+        function (ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('main'));    
+            option = {
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    // data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+                        data:arr_name
+
+                },
+                toolbox: {
                     show : true,
                     feature : {
                         mark : {show: true},
                         dataView : {show: true, readOnly: false},
-                        magicType : {show: true, type: ['line', 'bar']},
+                        magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
                         restore : {show: true},
                         saveAsImage : {show: true}
                     }
                 },
-                    calculable : true,
-                                xAxis : [
-                                    {
-                                        type : 'category',
-                                        data : obj.aaa
-                                        // data : ['1','2','3','4']//x;
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        boundaryGap : false,
+                        // data : ['周一','周二','周三','周四','周五','周六','周日']
+                        data:StartTime
 
-                                    }
-                                ],
-                                yAxis : [
-                                    {
-                                        type : 'value'
-                                    }
-                                ],
-                                series : [
-                                    {
-                                        "name":"在线时长",
-                                        "type":"bar",
-                                        // "data":['12','23','34','12']
-                                        "data":obj.bbb
-                                    }
-                                ]
-                            };                           
-                // 为echarts对象加载数据 
-                
-                myChart.setOption(option); 
-            });
-console.log(obj.bbb);
-    </script>  
-  
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series:series
+            };      
+            // 为echarts对象加载数据 
+            myChart.setOption(option); 
+        });
+
+    </script>       
 </body>
