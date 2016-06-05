@@ -1,14 +1,14 @@
 <?php
-
 require_once "init.php";
-
 if(!isset($_SESSION['username']) || $_SESSION['username']!=true){
-    $_SESSION['userurl'] = $_SERVER['REQUEST_URI'];
-    echo "<meta http-equiv=\"Refresh\" content=\"0;url=login.php\">";
+    $_SESSION['userurl'] = 'sign_home';
+    
+	$finallyArray['data'] = array('flag'=>'false');
+	$historyTestJSON=json_encode($finallyArray,JSON_UNESCAPED_UNICODE);
+	echo $historyTestJSON;
     exit();
 }
-
-$username = $_SESSION['username'];
-$smarty->assign('username',$username);
-$smarty->display('sign_home.tpl');
+	$finallyArray['data'] = array('flag'=>'true');
+	$historyTestJSON=json_encode($finallyArray,JSON_UNESCAPED_UNICODE);
+	echo $historyTestJSON;
 ?>

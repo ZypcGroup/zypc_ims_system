@@ -1,9 +1,6 @@
-﻿<?php 
-
+<?php 
 require_once "init.php";
-
 $_SESSION['username'] = $_SESSION['admin'] = NULL;
-
 if($_POST){
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -17,7 +14,6 @@ if($_POST){
     $db = new db_sql_functions();
     $password = md5($password);
     $usernm = $db->check_user($username,$password);
-
     if($usernm){
         $_SESSION['username']=true;
         $_SESSION['admin']=false;
@@ -33,6 +29,5 @@ if($_POST){
         echo "<meta http-equiv=\"Refresh\" content=\"0;url=login.php\">";
     }
 }
-
-$smarty->display('login.tpl');
+header('Location: $url.html');
 ?>
