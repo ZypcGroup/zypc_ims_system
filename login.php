@@ -29,5 +29,5 @@ if($_POST){
         echo "<meta http-equiv=\"Refresh\" content=\"0;url=login.php\">";
     }
 }
-header('Location: $url.html');
+
 ?>
