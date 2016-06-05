@@ -4,7 +4,7 @@
 <title>智邮普创工作室-内部管理平台</title>
 <script type="text/javascript" src="../static/js/ajax.js"></script>
 <script type="text/javascript">
-	Ajax('get','../webapi/sign_home.php',null,function(data){
+	Ajax('get','../WEPAPI/sign_home.php',null,function(data){
         var json = JSON.parse(data);
         // console.log(json.data.flag);
         // console.log(typeof(json.data.flag));
@@ -18,7 +18,7 @@
     });
 
     //查询在线人数
-    Ajax('get','../webapi/sign_online.php',null,function(data){
+    Ajax('get','../WEPAPI/sign_online.php',null,function(data){
         var json = JSON.parse(data);
         console.log(json.data);	
 		$(document).ready(function(){
