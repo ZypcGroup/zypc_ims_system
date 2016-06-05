@@ -5,33 +5,27 @@
 <script type="text/javascript" src="../static/js/ajax.js"></script>
 <script src="../static/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
-		//显示今日时间
-		var now = new Date();
-		console.log(now);
-		var mouth = now.getMonth()+1;
-		console.log(mouth);
-		var date = now.getDate();
-		var hours = now.getHours();
-		var minutes = now.getMinutes();
-			if(parseInt(mouth) < 10){
-				mouth = "0"+mouth;
-			}
-			if(parseInt(date) < 10){
-				date = "0"+date;
-			}
-			if(parseInt(hours) < 10){
-				hours = "0"+hours;
-			}
-			if(parseInt(minutes) < 10){
-				minutes = "0"+minutes;
-			}
-			console.log(mouth);
-
+	//显示今日时间
+	var now = new Date();
+	var mouth = now.getMonth()+1;
+	var date = now.getDate();
+	var hours = now.getHours();
+	var minutes = now.getMinutes();
+		if(parseInt(mouth) < 10){
+			mouth = "0"+mouth;
+		}
+		if(parseInt(date) < 10){
+			date = "0"+date;
+		}
+		if(parseInt(hours) < 10){
+			hours = "0"+hours;
+		}
+		if(parseInt(minutes) < 10){
+			minutes = "0"+minutes;
+		}
 		$(document).ready(function(){
 			// alert('日期：'+mouth+'-'+date+'时间：'+hours+':'+minutes);
 			$("#AssessHometime").append('日期：'+mouth+'-'+date+'时间：'+hours+':'+minutes);
-
-			// console.log(now.getMonth()+1+'-'+now.getDate()+' '+now.getHours()+':'+now.getMinutes());
 		});
 	Ajax('get','../WEPAPI/assess_home.php',null,function(data){
         var json = JSON.parse(data);
@@ -41,16 +35,14 @@
 			// window.location.href="http://ims.smartxupt.com/login.html";
 			window.location.pathname="/zypc_ims_system-master/html/login.html";
 		}	
-		// console.log(json.data);
 		$(document).ready(function(){
-		    $("#AssessHomePlan").append(json.data.detial_play);			
-		    $("#AssessHomeAdvice").append(json.data.admin_rate);
-		    $("#AssessHomeGread").append(json.data.admin_rank);
-		    $("#AssessHomeAllTime").append(json.data.timelong+'小时');
+		$("#AssessHomePlan").append(json.data.detial_play);			
+		$("#AssessHomeAdvice").append(json.data.admin_rate);
+		$("#AssessHomeGread").append(json.data.admin_rank);
+		$("#AssessHomeAllTime").append(json.data.timelong+'小时');
 	  });
 		
-
-	}, function(error){
+		}, function(error){
         console.log(error);
     });
 </script>
@@ -64,9 +56,9 @@
 <meta name="keywords" content="zypc,smartxupt" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!--Google Fonts-->
-<!-- <link href='//fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'> -->
-<!-- <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'> -->
-<!-- start-smoth-scrolling -->
+<link href='//fonts.googleapis.com/css?family=Squada+One' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
+<-- start-smoth-scrolling -->
 <script type="text/javascript" src="../static/js/move-top.js"></script>
 <script type="text/javascript" src="../static/js/easing.js"></script>
 	<script type="text/javascript">
