@@ -24,7 +24,7 @@
 			minutes = "0"+minutes;
 		}
 		$(document).ready(function(){
-			// alert('日期：'+mouth+'-'+date+'时间：'+hours+':'+minutes);
+			// alert('日期：'+mouth+'-'+date+' 时间：'+hours+':'+minutes);
 			$("#AssessHometime").append('日期：'+mouth+'-'+date+'时间：'+hours+':'+minutes);
 		});
 	Ajax('get','../WEPAPI/assess_home.php',null,function(data){
